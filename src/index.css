@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-ivory: #FBF8F4;
+    --bg-surface: #F4EEE7;
+    --text-ink: #1C1420;
+    --text-muted: #6B5F6E;
+    --accent-champagne: #F6D7B0;
+    --accent-rose: #E8A3B5;
+    --accent-lilac: #C9B6E4;
+    --accent-rosegold: #B76E79;
+  }
+
+  body {
+    background-color: var(--bg-ivory);
+    color: var(--text-ink);
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Luxury Grain Overlay */
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Signature luxury gradients */
+.bg-signature-gradient {
+  background: linear-gradient(135deg, #F6D7B0 0%, #E8A3B5 50%, #C9B6E4 100%);
+}
+
+.text-gradient-signature {
+  background: linear-gradient(135deg, #B76E79 0%, #C87D94 50%, #88629E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #B76E79 50%, #E8A3B5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FBF8F4;
+}
+::-webkit-scrollbar-thumb {
+  background: #E8A3B5;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B76E79;
+}
+
+/* Clip-path reveal helper */
+.clip-reveal {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}

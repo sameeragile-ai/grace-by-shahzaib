@@ -1,0 +1,6 @@
+{
+  "name": "Grace by Shahzaib",
+  "description": "Premium Apparel, Fine Jewellery, Classic Timepieces & Mobile Accessories. Luxury shopping experience crafted by Grace by Shahzaib.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
