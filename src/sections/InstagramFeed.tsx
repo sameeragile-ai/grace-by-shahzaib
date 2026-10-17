@@ -1,33 +1,33 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Instagram, ArrowUpRight } from 'lucide-react';
-import { SITE_CONTENT } from '../data/content';
+import { SITE_CONTENT, img } from '../data/content';
 import { SmartImage } from '../components/SmartImage';
 
 export const InstagramFeed: React.FC = () => {
   const feedItems = [
     {
-      image: "images/category-apparel.jpg",
+      image: img("apparel-cover.jpg"),
       caption: "Bespoke embroidered luxury pret for the festive season.",
       likes: "1.2k"
     },
     {
-      image: "images/category-jewellery.jpg",
+      image: img("jewellery-cover.jpg"),
       caption: "Hand-faceted teardrop white zircon on sterling silver chain.",
       likes: "840"
     },
     {
-      image: "images/category-tech.jpg",
+      image: img("accessories-cover.jpg"),
       caption: "Studio acoustic clarity: Dual wireless lavalier microphones.",
       likes: "950"
     },
     {
-      image: "images/atelier-craftsmanship.jpg",
+      image: img("craftsmanship.jpg"),
       caption: "Behind the seams: Master needlecraft on velvet dhanak.",
       likes: "1.5k"
     },
     {
-      image: "images/hero-luxury-fashion.jpg",
+      image: img("hero.jpg"),
       caption: "Elevate your everyday presence. New luxury drops.",
       likes: "2.1k"
     }

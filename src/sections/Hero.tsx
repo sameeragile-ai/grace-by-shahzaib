@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowUpRight, ChevronDown, Sparkles } from 'lucide-react';
@@ -7,23 +7,49 @@ import { SmartImage } from '../components/SmartImage';
 
 export const Hero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [isSafetyFallbackActive, setIsSafetyFallbackActive] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start']
   });
 
   const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const imageY = useTransform(scrollYProgress, [0, 1], [0, 50]);
+  const imageY = useTransform(scrollYProgress, [0, 1], [0, 40]);
 
   const customEase = [0.22, 1, 0.36, 1] as const;
+
+  // Reduced motion check
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  useEffect(() => {
+    // Reveal trigger shortly after mount
+    const revealTimer = setTimeout(() => {
+      setIsRevealed(true);
+    }, 250);
+
+    // Guaranteed safety fallback: after 2.5s, the image is unconditionally fully visible
+    const safetyTimer = setTimeout(() => {
+      setIsRevealed(true);
+      setIsSafetyFallbackActive(true);
+    }, 2500);
+
+    return () => {
+      clearTimeout(revealTimer);
+      clearTimeout(safetyTimer);
+    };
+  }, []);
 
   return (
     <section
       ref={containerRef}
       className="relative min-h-[100svh] w-full flex flex-col justify-between pt-28 pb-8 px-6 md:px-10 overflow-hidden bg-[#FBF8F4]"
     >
-      {/* Drifting soft gradient mesh blobs */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Drifting soft gradient mesh blobs - strictly z-0 with pointer-events-none */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         {/* Champagne blob */}
         <motion.div
           animate={{
@@ -36,7 +62,7 @@ export const Hero: React.FC = () => {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-[#F6D7B0]/30 blur-[100px]"
+          className="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-[#F6D7B0]/25 blur-[100px]"
         />
 
         {/* Rose blob */}
@@ -51,7 +77,7 @@ export const Hero: React.FC = () => {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-[20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#E8A3B5]/25 blur-[120px]"
+          className="absolute top-[20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#E8A3B5]/20 blur-[120px]"
         />
 
         {/* Lilac blob */}
@@ -65,15 +91,15 @@ export const Hero: React.FC = () => {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute -bottom-[20%] left-[25%] w-[45vw] h-[45vw] rounded-full bg-[#C9B6E4]/25 blur-[110px]"
+          className="absolute -bottom-[20%] left-[25%] w-[45vw] h-[45vw] rounded-full bg-[#C9B6E4]/20 blur-[110px]"
         />
       </div>
 
-      {/* Main Content Area: Editorial Split Grid */}
+      {/* Main Content Area: Editorial Split Grid (z-10) */}
       <div className="relative z-10 max-w-[1360px] mx-auto w-full my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Column (Editorial Typography & CTAs) */}
         <div className="lg:col-span-7 flex flex-col justify-center">
-          {/* Eyebrow with small diamond */}
+          {/* Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -125,7 +151,7 @@ export const Hero: React.FC = () => {
             {SITE_CONTENT.brand.heroSubheading}
           </motion.p>
 
-          {/* 3 Category Chips in Hero (Visible within first second) */}
+          {/* 3 Category Chips in Hero */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -180,31 +206,36 @@ export const Hero: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Right Column (Hero Visual with Parallax & Clip Reveal) */}
-        <div className="lg:col-span-5 relative mt-6 lg:mt-0">
+        {/* Right Column (Hero Visual with Explicit Sizing & Guaranteed Reveal) */}
+        <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex justify-center w-full">
+          {/* Explicit Container Size: aspect-ratio 4/5, height ~min(78svh, 720px) on desktop, min-h-[380px] on mobile */}
           <motion.div
-            initial={{ clipPath: 'inset(100% 0% 0% 0%)', opacity: 0 }}
-            animate={{ clipPath: 'inset(0% 0% 0% 0%)', opacity: 1 }}
-            transition={{ duration: 1.1, delay: 0.2, ease: customEase }}
-            className="relative rounded-[28px] overflow-hidden shadow-2xl border border-[#1C1420]/10 bg-[#F4EEE7] aspect-[4/5]"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.1, ease: customEase }}
+            className="relative w-full max-w-[500px] lg:max-w-none aspect-[4/5] h-[400px] sm:h-[500px] lg:h-[min(78svh,720px)] rounded-[28px] overflow-hidden shadow-2xl border border-[#1C1420]/10 bg-[#F4EEE7] z-10"
           >
+            {/* Parallax / Gentle Scroll Scaling wrapper */}
             <motion.div
               style={{ scale: imageScale, y: imageY }}
-              className="w-full h-full will-change-transform"
+              className="w-full h-full will-change-transform overflow-hidden"
             >
               <SmartImage
                 src={SITE_CONTENT.brand.heroImage}
-                alt="Grace by Shahzaib Luxury Lifestyle & Haute Couture"
+                alt="Grace by Shahzaib - Luxury Lifestyle, Embroidered Apparel, Fine Jewellery & Classic Timepieces"
                 fallbackCategory="Haute Couture"
+                loading="eager"
+                fetchPriority="high"
+                objectPosition="center top"
                 className="w-full h-full object-cover"
               />
             </motion.div>
 
             {/* Subtle Gradient Scrim at bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1C1420]/70 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1C1420]/80 via-transparent to-transparent pointer-events-none z-10" />
 
             {/* Floating Editorial Badge on bottom left */}
-            <div className="absolute bottom-6 left-6 right-6 text-white z-10 flex items-end justify-between">
+            <div className="absolute bottom-6 left-6 right-6 text-white z-20 flex items-end justify-between pointer-events-none">
               <div>
                 <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#F6D7B0] block">
                   New Season Curation
