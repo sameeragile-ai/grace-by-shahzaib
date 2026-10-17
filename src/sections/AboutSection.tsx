@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { Sparkles, ArrowRight, Check } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { SITE_CONTENT } from '../data/content';
+import { SmartImage } from '../components/SmartImage';
 
 export const AboutSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -25,16 +26,17 @@ export const AboutSection: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="relative rounded-[28px] overflow-hidden shadow-2xl border border-[#1C1420]/8 bg-white aspect-[16/10] sm:aspect-[4/3]"
           >
-            <motion.img
-              style={{ y: parallaxY }}
-              src="/src/assets/images/atelier_craftsmanship_1792237669060.jpg"
-              alt="Atelier Craftsmanship - Handcrafted Pakistani Silk and Embroidery"
-              referrerPolicy="no-referrer"
-              className="w-full h-[115%] object-cover -mt-[7%]"
-            />
+            <motion.div style={{ y: parallaxY }} className="w-full h-[115%] -mt-[7%]">
+              <SmartImage
+                src={SITE_CONTENT.brand.craftsmanshipImage}
+                alt="Atelier Craftsmanship - Handcrafted Pakistani Silk and Embroidery"
+                fallbackCategory="Artisanal Heritage"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
 
             {/* Inset Label */}
-            <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/85 backdrop-blur-md border border-white/40 flex items-center justify-between">
+            <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/85 backdrop-blur-md border border-white/40 flex items-center justify-between z-10">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#B76E79] block">
                   Artisanal Heritage

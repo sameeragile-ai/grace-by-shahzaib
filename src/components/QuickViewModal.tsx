@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, MessageCircle, Star, ShieldCheck, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { SITE_CONTENT } from '../data/content';
+import { SmartImage } from './SmartImage';
 
 export const QuickViewModal: React.FC = () => {
   const { quickViewProduct, setQuickViewProduct, addToCart } = useCart();
@@ -57,16 +58,16 @@ export const QuickViewModal: React.FC = () => {
             <X className="w-4 h-4 stroke-[1.5]" />
           </button>
 
-          {/* Product Media */}
+          {/* Product Media with SmartImage */}
           <div className="relative aspect-[4/5] md:aspect-auto h-72 md:h-full bg-[#F4EEE7] overflow-hidden">
-            <img
+            <SmartImage
               src={quickViewProduct.image}
               alt={quickViewProduct.name}
-              referrerPolicy="no-referrer"
+              fallbackCategory={quickViewProduct.categoryLabel}
               className="w-full h-full object-cover"
             />
             {quickViewProduct.bestSeller && (
-              <span className="absolute top-4 left-4 text-[10px] uppercase font-mono tracking-wider px-2.5 py-1 bg-[#1C1420] text-white rounded-md">
+              <span className="absolute top-4 left-4 z-10 text-[10px] uppercase font-mono tracking-wider px-2.5 py-1 bg-[#1C1420] text-white rounded-md">
                 Best Seller
               </span>
             )}

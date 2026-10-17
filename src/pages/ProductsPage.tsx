@@ -4,6 +4,7 @@ import { Search, ShoppingBag, Eye, Star, ArrowUpDown } from 'lucide-react';
 import { PageTransition } from '../components/PageTransition';
 import { SITE_CONTENT, Product } from '../data/content';
 import { useCart } from '../context/CartContext';
+import { SmartImage } from '../components/SmartImage';
 
 export const ProductsPage: React.FC = () => {
   const { addToCart, setQuickViewProduct } = useCart();
@@ -110,7 +111,7 @@ export const ProductsPage: React.FC = () => {
           </div>
 
           <div className="text-xs text-[#6B5F6E] font-mono">
-            Showing {filteredProducts.length} results
+            Showing {filteredProducts.length} of {SITE_CONTENT.products.length} Products
           </div>
         </div>
 
@@ -126,7 +127,7 @@ export const ProductsPage: React.FC = () => {
                 setSelectedCategory('all');
                 setSearchQuery('');
               }}
-              className="px-6 py-2.5 rounded-full bg-[#1C1420] text-white text-xs font-semibold uppercase tracking-wider"
+              className="px-6 py-2.5 rounded-full bg-[#1C1420] text-white text-xs font-semibold uppercase tracking-wider cursor-pointer"
             >
               Reset Search & Filters
             </button>
@@ -143,22 +144,22 @@ export const ProductsPage: React.FC = () => {
                   className="group flex flex-col justify-between rounded-2xl bg-white border border-[#1C1420]/8 p-3 sm:p-4 hover:shadow-xl hover:border-[#E8A3B5]/60 transition-all duration-300"
                 >
                   <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-[#F4EEE7] mb-3">
-                    <img
+                    <SmartImage
                       src={product.image}
                       alt={product.name}
-                      referrerPolicy="no-referrer"
+                      fallbackCategory={product.fabricOrMaterial || product.categoryLabel}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />
 
                     {/* Badge */}
                     {product.bestSeller && (
-                      <span className="absolute top-2.5 left-2.5 text-[9px] uppercase font-mono tracking-wider px-2 py-0.5 bg-[#1C1420] text-white rounded-md">
+                      <span className="absolute top-2.5 left-2.5 z-10 text-[9px] uppercase font-mono tracking-wider px-2 py-0.5 bg-[#1C1420] text-white rounded-md">
                         Best Seller
                       </span>
                     )}
 
                     {/* Quick View and Add to Bag buttons on Hover */}
-                    <div className="absolute inset-0 bg-[#1C1420]/25 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-4">
+                    <div className="absolute inset-0 bg-[#1C1420]/25 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-4 z-10">
                       <button
                         onClick={() => setQuickViewProduct(product)}
                         className="p-2.5 rounded-full bg-white text-[#1C1420] hover:text-[#B76E79] shadow-lg hover:scale-110 transition-all cursor-pointer"

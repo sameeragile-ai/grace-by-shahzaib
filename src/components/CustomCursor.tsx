@@ -7,6 +7,7 @@ export const CustomCursor: React.FC = () => {
 
   const [cursorText, setCursorText] = useState<string>('');
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isNavOrMenu, setIsNavOrMenu] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isTouch, setIsTouch] = useState<boolean>(false);
 
@@ -35,23 +36,29 @@ export const CustomCursor: React.FC = () => {
         dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
       }
 
-      // Check cursor data attributes
+      // Check cursor data attributes & navigation/menu containment
       const target = e.target as HTMLElement | null;
       if (target) {
+        // Check if inside navbar, nav links, or mega-menu
+        const inNavOrMenu = Boolean(
+          target.closest('header nav, header [role="menu"], .mega-menu-panel, [data-cursor-hide-ring]')
+        );
+        setIsNavOrMenu(inNavOrMenu);
+
         const cursorEl = target.closest('[data-cursor]') as HTMLElement | null;
-        if (cursorEl) {
+        if (cursorEl && !inNavOrMenu) {
           const text = cursorEl.getAttribute('data-cursor') || '';
           setCursorText(text);
           setIsHovered(true);
         } else {
           setCursorText('');
           const interactive = target.closest('a, button, input, select, textarea, [role="button"]');
-          setIsHovered(!!interactive);
+          setIsHovered(!!interactive && !inNavOrMenu);
         }
 
-        // Magnetic hover calculation for elements with data-magnetic
+        // Magnetic hover calculation for elements with data-magnetic (outside menu)
         const magneticEl = target.closest('[data-magnetic]') as HTMLElement | null;
-        if (magneticEl) {
+        if (magneticEl && !inNavOrMenu) {
           const rect = magneticEl.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
@@ -85,7 +92,6 @@ export const CustomCursor: React.FC = () => {
     document.addEventListener('mouseleave', onMouseLeaveWindow);
     animationFrameId = requestAnimationFrame(render);
 
-    // Reset magnetic elements on mouseout
     const handleMouseOut = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (target) {
@@ -114,27 +120,31 @@ export const CustomCursor: React.FC = () => {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      {/* Small solid dot (8px) */}
+      {/* Small solid dot (6px when in nav, 8px normally) */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 -ml-1 -mt-1 w-2 h-2 rounded-full bg-[#1C1420] transition-transform duration-75 ease-out will-change-transform"
+        className={`fixed top-0 left-0 rounded-full bg-[#1C1420] transition-transform duration-75 ease-out will-change-transform ${
+          isNavOrMenu ? '-ml-0.5 -mt-0.5 w-1.5 h-1.5 opacity-60' : '-ml-1 -mt-1 w-2 h-2'
+        }`}
         style={{
           display: cursorText ? 'none' : 'block',
         }}
       />
 
-      {/* Larger following ring (36px or expanded with text) */}
+      {/* Larger following ring: hidden/shrunk to 0 opacity inside nav and dropdown so text is never covered */}
       <div
         ref={ringRef}
         className={`fixed top-0 left-0 flex items-center justify-center rounded-full border transition-all duration-300 ease-out will-change-transform ${
-          cursorText
-            ? '-ml-9 -mt-9 w-[72px] h-[72px] bg-[#1C1420] text-[#FBF8F4] border-transparent shadow-xl'
+          isNavOrMenu
+            ? 'opacity-0 scale-50 pointer-events-none'
+            : cursorText
+            ? '-ml-9 -mt-9 w-[72px] h-[72px] bg-[#1C1420] text-[#FBF8F4] border-transparent shadow-xl opacity-100'
             : isHovered
-            ? '-ml-6 -mt-6 w-12 h-12 border-[#B76E79] bg-[#E8A3B5]/20 backdrop-blur-[2px]'
-            : '-ml-[18px] -mt-[18px] w-9 h-9 border-[#1C1420]/30'
+            ? '-ml-6 -mt-6 w-12 h-12 border-[#B76E79] bg-[#E8A3B5]/20 backdrop-blur-[2px] opacity-100'
+            : '-ml-[18px] -mt-[18px] w-9 h-9 border-[#1C1420]/30 opacity-100'
         }`}
       >
-        {cursorText && (
+        {cursorText && !isNavOrMenu && (
           <span
             ref={textRef}
             className="text-[11px] font-medium uppercase tracking-widest text-[#FBF8F4]"

@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingBag, Eye, Star, Filter, ArrowUpDown } from 'lucide-r
 import { PageTransition } from '../components/PageTransition';
 import { SITE_CONTENT, Product } from '../data/content';
 import { useCart } from '../context/CartContext';
+import { SmartImage } from '../components/SmartImage';
 
 export const CategoryPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -70,7 +71,7 @@ export const CategoryPage: React.FC = () => {
                 {category.description}
               </p>
               <div className="flex items-center gap-4 text-xs font-mono text-[#1C1420]">
-                <span>{filteredProducts.length} Items Available</span>
+                <span>{filteredProducts.length} Products Available</span>
                 <span aria-hidden="true">·</span>
                 <span>Authentic Guarantee</span>
                 <span aria-hidden="true">·</span>
@@ -79,13 +80,13 @@ export const CategoryPage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-5 h-64 lg:h-full min-h-[300px] overflow-hidden relative">
-              <img
-                src={category.image}
+              <SmartImage
+                src={category.bannerImage || category.image}
                 alt={category.name}
-                referrerPolicy="no-referrer"
+                fallbackCategory={category.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#F4EEE7] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#F4EEE7] via-transparent to-transparent pointer-events-none" />
             </div>
           </div>
         </div>
@@ -143,7 +144,7 @@ export const CategoryPage: React.FC = () => {
             <p className="text-xs text-[#6B5F6E] mb-6">Try clearing your active filter.</p>
             <button
               onClick={() => setActiveTag('all')}
-              className="px-6 py-2.5 rounded-full bg-[#1C1420] text-white text-xs font-semibold uppercase tracking-wider"
+              className="px-6 py-2.5 rounded-full bg-[#1C1420] text-white text-xs font-semibold uppercase tracking-wider cursor-pointer"
             >
               Reset Filters
             </button>
@@ -160,22 +161,22 @@ export const CategoryPage: React.FC = () => {
                   className="group flex flex-col justify-between rounded-2xl bg-white border border-[#1C1420]/8 p-3 sm:p-4 hover:shadow-xl hover:border-[#E8A3B5]/60 transition-all duration-300"
                 >
                   <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-[#F4EEE7] mb-3">
-                    <img
+                    <SmartImage
                       src={product.image}
                       alt={product.name}
-                      referrerPolicy="no-referrer"
+                      fallbackCategory={product.fabricOrMaterial || product.categoryLabel}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />
 
                     {/* Badge */}
                     {product.bestSeller && (
-                      <span className="absolute top-2.5 left-2.5 text-[9px] uppercase font-mono tracking-wider px-2 py-0.5 bg-[#1C1420] text-white rounded-md">
+                      <span className="absolute top-2.5 left-2.5 z-10 text-[9px] uppercase font-mono tracking-wider px-2 py-0.5 bg-[#1C1420] text-white rounded-md">
                         Best Seller
                       </span>
                     )}
 
                     {/* Quick View and Add to Bag buttons on Hover */}
-                    <div className="absolute inset-0 bg-[#1C1420]/25 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-4">
+                    <div className="absolute inset-0 bg-[#1C1420]/25 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-4 z-10">
                       <button
                         onClick={() => setQuickViewProduct(product)}
                         className="p-2.5 rounded-full bg-white text-[#1C1420] hover:text-[#B76E79] shadow-lg hover:scale-110 transition-all cursor-pointer"
@@ -255,15 +256,17 @@ export const CategoryPage: React.FC = () => {
                   className="group flex items-center justify-between p-6 rounded-2xl bg-white border border-[#1C1420]/8 hover:border-[#B76E79] transition-all"
                 >
                   <div className="flex items-center gap-4">
-                    <img
-                      src={other.image}
-                      alt={other.name}
-                      referrerPolicy="no-referrer"
-                      className="w-16 h-16 rounded-xl object-cover"
-                    />
+                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                      <SmartImage
+                        src={other.image}
+                        alt={other.name}
+                        fallbackCategory={other.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <div>
                       <span className="font-mono text-[10px] text-[#B76E79]">
-                        Department {other.number}
+                        Department {other.number} · {SITE_CONTENT.getCategoryCount(other.slug)} Products
                       </span>
                       <h4 className="font-serif text-xl text-[#1C1420] group-hover:text-[#B76E79] transition-colors">
                         {other.name}

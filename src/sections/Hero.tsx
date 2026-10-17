@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowUpRight, ChevronDown, Sparkles } from 'lucide-react';
 import { SITE_CONTENT } from '../data/content';
+import { SmartImage } from '../components/SmartImage';
 
 export const Hero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -187,13 +188,17 @@ export const Hero: React.FC = () => {
             transition={{ duration: 1.1, delay: 0.2, ease: customEase }}
             className="relative rounded-[28px] overflow-hidden shadow-2xl border border-[#1C1420]/10 bg-[#F4EEE7] aspect-[4/5]"
           >
-            <motion.img
+            <motion.div
               style={{ scale: imageScale, y: imageY }}
-              src="/src/assets/images/hero_luxury_fashion_1792237668313.jpg"
-              alt="Grace by Shahzaib Luxury Lifestyle & Haute Couture"
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover will-change-transform"
-            />
+              className="w-full h-full will-change-transform"
+            >
+              <SmartImage
+                src={SITE_CONTENT.brand.heroImage}
+                alt="Grace by Shahzaib Luxury Lifestyle & Haute Couture"
+                fallbackCategory="Haute Couture"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
 
             {/* Subtle Gradient Scrim at bottom */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#1C1420]/70 via-transparent to-transparent pointer-events-none" />

@@ -4,6 +4,7 @@ import { Sparkles, ShieldCheck, Heart, Award, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PageTransition } from '../components/PageTransition';
 import { SITE_CONTENT } from '../data/content';
+import { SmartImage } from '../components/SmartImage';
 
 export const AboutPage: React.FC = () => {
   const materials = [
@@ -65,10 +66,10 @@ export const AboutPage: React.FC = () => {
 
         {/* Big Editorial Image */}
         <div className="rounded-[28px] overflow-hidden bg-[#F4EEE7] border border-[#1C1420]/8 mb-20 shadow-md">
-          <img
-            src="/src/assets/images/atelier_craftsmanship_1792237669060.jpg"
+          <SmartImage
+            src={SITE_CONTENT.brand.craftsmanshipImage}
             alt="Grace by Shahzaib Master Artisan Embroidery"
-            referrerPolicy="no-referrer"
+            fallbackCategory="Artisanal Heritage"
             className="w-full h-80 sm:h-[460px] object-cover"
           />
         </div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Plus, Minus, Trash2, ArrowRight, ShoppingBag, ShieldCheck, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { SITE_CONTENT } from '../data/content';
+import { SmartImage } from './SmartImage';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -131,12 +132,14 @@ export const CartDrawer: React.FC = () => {
                 ) : (
                   cart.map(({ product, quantity }) => (
                     <div key={product.id} className="py-4 flex gap-4 first:pt-0 last:pb-0">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        referrerPolicy="no-referrer"
-                        className="w-20 h-24 object-cover rounded-xl bg-[#F4EEE7] shrink-0"
-                      />
+                      <div className="w-20 h-24 rounded-xl overflow-hidden bg-[#F4EEE7] shrink-0 border border-[#1C1420]/6">
+                        <SmartImage
+                          src={product.image}
+                          alt={product.name}
+                          fallbackCategory={product.categoryLabel}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <div className="flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex items-start justify-between gap-2">
